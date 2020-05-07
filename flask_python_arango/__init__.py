@@ -14,13 +14,8 @@
 
 __all__ = ("FlaskArango")
 
-from functools import partial
-from mimetypes import guess_type
-import sys
-
-from flask import abort, current_app, request
-
 from arango import ArangoClient
+from flask import current_app, _app_ctx_stack
 
 
 class FlaskArango(object):
@@ -32,26 +27,43 @@ class FlaskArango(object):
     """
 
     def __init__(self, app=None):
-        self.client = None
-        self.db = None
         if app is not None:
             self.init_app(app)
 
     def init_app(self, app):
         self.app = app
-        host = app.config.get("ARANGODB_HOST", None)
+        app.teardown_appcontext(self.teardown)
+
+    def connect(self):
+
+        host = self.app.config.get("ARANGODB_HOST", None)
+        db_name = self.app.config.get("ARANGODB_DB", None)
+        db_username = self.app.config.get("ARANGODB_USERNAME", None)
+        db_password = self.app.config.get("ARANGODB_PSW", None)
+
         if host is None:
             raise ValueError(
                 "You must set the ARANGO_HOST Flask config variable",
             )
+        if db_name is None:
+            raise ValueError(
+                "You must set the ARANGODB_DB Flask config variable",
+            )
         # Initialize the client for ArangoDB.
-        self.client = ArangoClient(hosts=host)
-        db_name = app.config.get("ARANGODB_DB", None)
-        db_username = app.config.get("ARANGODB_USERNAME", None)
-        db_password = app.config.get("ARANGODB_PSW", None)
-
+        client = ArangoClient(hosts=host)
         # Connect to database.
-        self.db = self.client.db(
+        return client.db(
             db_name, username=db_username, password=db_password)
 
-        print(self.db)
+    def teardown(self, exception):
+        ctx = _app_ctx_stack.top
+        if hasattr(ctx, 'arango_db'):
+            del ctx.arango_db
+
+    @property
+    def connection(self):
+        ctx = _app_ctx_stack.top
+        if ctx is not None:
+            if not hasattr(ctx, 'arango_db'):
+                ctx.arango_db = self.connect()
+            return ctx.arango_db
