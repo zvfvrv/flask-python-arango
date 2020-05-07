@@ -14,4 +14,4 @@ Install the extension with using pip, or easy_install.
 
 ## Contributing
 
-Please create an issue on [Github](https://github.com/corydolphin/flask-cors).
+Please create an issue on [Github](https://github.com/zvfvrv/flask-python-arango).

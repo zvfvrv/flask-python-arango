@@ -14,15 +14,19 @@ Contributions are welcome!
 
 from setuptools import find_packages, setup
 
+with open("README.md", "r") as fh:
+    long_description = fh.read()
+
 setup(
-    name="Flask-Python-Arangoo",
+    name="Flask-Python-Arango",
+    version="0.0.1",
     url="https://github.com/zvfvrv/flask-python-arango",
     download_url="https://github.com/zvfvrv/flask-python-arango/tags",
     license="Apache-2.0",
     author="Francesco Lombardo",
     author_email="franclombardo@gmail.com",
-    description="python-arango support for Flask applications",
-    long_description=__doc__,
+    description="Python ArangoDB support for Flask applications",
+    long_description=long_description,
     zip_safe=False,
     platforms="any",
     packages=find_packages(),
