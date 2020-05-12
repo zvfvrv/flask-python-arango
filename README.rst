@@ -1,3 +1,6 @@
+|Upload Python Package|
+
+
 Flask-Python-Arango
 ===================
 
@@ -60,3 +63,4 @@ Links
 .. _ArangoDB: https://www.arangodb.com
 .. _`python-arango`: https://github.com/joowani/python-arango/releases
 .. _PyPi: https://pypi.org/project/flask-python-arango/
+.. |Upload Python Package| image:: https://github.com/zvfvrv/flask-python-arango/workflows/Upload%20Python%20Package/badge.svg
